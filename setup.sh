@@ -17,9 +17,11 @@ fi
 echo "==> Installing packages from Brewfile..."
 brew bundle --file="$(dirname "$0")/Brewfile"
 
-echo "==> Linking git config..."
-ln -sf "$(dirname "$0")/git/.gitconfig" ~/.gitconfig
+echo "==> Setting up git config..."
+bash "$(dirname "$0")/scripts/setup-ssh.sh"
+
+echo "==> Linking zsh config..."
+ln -sf "$(dirname "$0")/zsh/.zshrc" ~/.zshrc
 
 echo ""
 echo "Done! Open a new terminal for all changes to take effect."
-echo "Remember to edit git/.gitconfig with your name and email."
