@@ -1,4 +1,6 @@
-# Mac Setup Guide
+# Setup Guide
+
+Supports **macOS**, **Arch Linux**, and **Ubuntu**.
 
 ## Fresh install
 
@@ -13,10 +15,21 @@ source ~/.zshrc
 
 ## What setup.sh does
 
-1. Installs Homebrew if not present
-2. Runs `brew bundle` to install all packages from `Brewfile`
+1. Detects the OS (`Darwin` → macOS, `/etc/arch-release` → Arch, `/etc/os-release` → Ubuntu)
+2. Runs `packages/install.sh <os>`, which reads the OS column of `packages.tsv`,
+   groups packages by install method, and installs each group:
+   - **macOS** — regenerates `Brewfile` from the manifest, then `brew bundle`
+   - **Arch** — `pacman -Syu` + native packages, bootstraps `yay` for AUR, Flatpak for GUI apps
+   - **Ubuntu** — apt for native packages, `custom-ubuntu.sh` hooks for tools not in apt
+     (mise, kubectl, k9s, yq, AWS/Azure/GCloud CLIs), Flatpak for GUI apps
 3. Calls `scripts/setup-ssh.sh` to configure git signing
 4. Symlinks `zsh/.zshrc` to `~/.zshrc`
+
+All package definitions live in **`packages.tsv`** (one row per tool, one column
+per OS) — see the README for the token format. The `Brewfile` is generated from it.
+
+The `.zshrc` is portable: it resolves the zsh-plugin path per OS, activates `mise`
+only if present, and uses the Bitwarden SSH agent socket only when the socket exists.
 
 ---
 
@@ -41,6 +54,11 @@ export SSH_AUTH_SOCK=~/.bitwarden-ssh-agent.sock
 - Enable SSH Agent: on
 - Authorization prompt: Remember until vault is locked
 - Auto-lock: 15 minutes
+
+**Linux note:** the Flatpak Bitwarden desktop sandboxes its socket under
+`~/.var/app/com.bitwarden.desktop/...`. Symlink it to `~/.bitwarden-ssh-agent.sock`
+(the path `.zshrc` expects) once after first launch, or install the native
+`.deb`/AUR build instead of Flatpak if you rely on the SSH agent.
 
 ### setup-ssh.sh
 

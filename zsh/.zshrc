@@ -1,14 +1,32 @@
 # =============================================================================
+# PATH (mise and other tools install here on Linux)
+# =============================================================================
+export PATH="$HOME/.local/bin:$PATH"
+
+# =============================================================================
 # mise — runtime version manager
 # =============================================================================
-eval "$(mise activate zsh)"
+command -v mise &>/dev/null && eval "$(mise activate zsh)"
 
+# =============================================================================
 # Bitwarden SSH Agent
-export SSH_AUTH_SOCK=~/.bitwarden-ssh-agent.sock
+# =============================================================================
+[[ -S ~/.bitwarden-ssh-agent.sock ]] && export SSH_AUTH_SOCK=~/.bitwarden-ssh-agent.sock
 
-# Zsh plugins (installed via Homebrew)
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# =============================================================================
+# Zsh plugins (path differs across Mac/Arch/Ubuntu)
+# =============================================================================
+if command -v brew &>/dev/null; then
+  ZSH_PLUGIN_DIR="$(brew --prefix)/share"      # macOS (Homebrew)
+elif [[ -d /usr/share/zsh/plugins ]]; then
+  ZSH_PLUGIN_DIR="/usr/share/zsh/plugins"      # Arch
+else
+  ZSH_PLUGIN_DIR="/usr/share"                  # Ubuntu/Debian
+fi
+[[ -f "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] \
+  && source "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] \
+  && source "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # =============================================================================
 # Git aliases

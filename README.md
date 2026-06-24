@@ -1,20 +1,52 @@
 # dotfiles
 
-Personal Mac setup for DevOps work. Covers everything from a fresh macOS install to a fully configured environment.
+Personal cross-platform setup for DevOps work. Covers a fresh **macOS**, **Arch Linux**, or **Ubuntu** install to a fully configured environment.
+
+`setup.sh` auto-detects the OS and runs the matching installer.
 
 ## Structure
 
 ```
 dotfiles/
-├── Brewfile              # All packages and apps (Homebrew)
-├── setup.sh              # Fresh install script
+├── setup.sh              # Fresh install (detects OS, runs the engine)
+├── packages.tsv          # SINGLE SOURCE OF TRUTH for all packages
+├── Brewfile              # GENERATED from packages.tsv — do not edit
+├── packages/
+│   ├── install.sh        # Engine: reads packages.tsv, installs per OS
+│   ├── gen-brewfile.sh   # Regenerates Brewfile from the macos column
+│   ├── custom-arch.sh    # Non-package-manager installs (Arch)
+│   └── custom-ubuntu.sh  # Non-apt installs (Ubuntu)
 ├── git/.gitconfig        # Git config template
-├── zsh/.zshrc            # Zsh config and aliases
+├── zsh/.zshrc            # Zsh config and aliases (portable)
 ├── scripts/
 │   └── setup-ssh.sh      # Configures git signing key per device
 └── docs/
     └── setup.md          # Detailed setup guide
 ```
+
+## How packages work
+
+Every package lives in **one row** of `packages.tsv`, with a column per OS:
+
+```
+# name   macos              arch   ubuntu
+k9s      derailed/k9s/k9s   k9s    custom:k9s
+```
+
+Each cell is a token telling the engine *how* to install on that OS:
+
+| Token | Meaning |
+|---|---|
+| `name` | native package (brew formula / pacman / apt) |
+| `cask:NAME` | macOS Homebrew cask |
+| `aur:NAME` | Arch AUR package (via yay) |
+| `flatpak:ID` | Flatpak app from Flathub (Linux GUI) |
+| `custom:NAME` | non-trivial install → `install_NAME` in `packages/custom-<os>.sh` |
+| `-` | skip on this OS (e.g. `alt-tab`, `rectangle` on Linux) |
+
+`packages/install.sh` reads the column for the detected OS, groups tokens by
+method, and installs each group in one batch (one `brew`/`pacman`/`apt` call).
+GUI apps use Flatpak on Linux so the same app IDs work on both distros.
 
 ## Quick start
 
@@ -25,7 +57,7 @@ bash setup.sh
 source ~/.zshrc
 ```
 
-`setup.sh` installs Homebrew, all packages from `Brewfile`, and configures git and zsh. It will ask for your SSH signing key during setup.
+`setup.sh` detects the OS, installs all packages, and configures git and zsh. It will ask for your SSH signing key during setup.
 
 ## Highlights
 
@@ -36,14 +68,19 @@ source ~/.zshrc
 - **Podman** instead of Docker
 - **SimpleLogin** (via Proton) for email aliases, integrated with Bitwarden
 
-## Adding packages
+## Adding / changing packages
 
-```bash
-brew install <tool>              # then add: brew "<tool>" to Brewfile
-brew install --cask <app>        # then add: cask "<app>" to Brewfile
-```
+Edit **one row** in `packages.tsv`:
 
-Runtime versions go in `.mise.toml` inside each project, not in Brewfile.
+1. Add a row: `name`, then the install token for each OS (`macos arch ubuntu`).
+2. For a tool not in a package manager, use `custom:NAME` and add an
+   `install_NAME` function to `packages/custom-arch.sh` / `custom-ubuntu.sh`.
+3. If you touched the **macos** column, regenerate the Brewfile:
+   ```bash
+   bash packages/gen-brewfile.sh
+   ```
+
+Runtime versions (Node, Python, Terraform) go in `.mise.toml` per project, not in the manifest.
 
 ## Per-device setup
 

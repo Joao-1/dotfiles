@@ -1,0 +1,46 @@
+# Single source of truth for packages across all OSes.
+# Columns: name  macos  arch  ubuntu        (whitespace-separated, one tool per row)
+#
+# Cell token tells the engine HOW to install on that OS:
+#   name           native package (brew formula / pacman / apt)
+#   cask:NAME      macOS Homebrew cask
+#   aur:NAME       Arch AUR package (via yay)
+#   flatpak:ID     Flatpak app from Flathub (Linux GUI)
+#   custom:NAME    non-trivial install -> install_NAME in packages/custom-<os>.sh
+#   -              skip on this OS
+#
+# After editing the macos column, run packages/gen-brewfile.sh to refresh Brewfile.
+
+# name                     macos                    arch                          ubuntu
+git                        git                      git                           git
+mise                       mise                     mise                          custom:mise
+kubectl                    kubectl                  kubectl                       custom:kubectl
+k9s                        derailed/k9s/k9s         k9s                           custom:k9s
+kubectx                    kubectx                  kubectx                       kubectx
+awscli                     awscli                   aws-cli                       custom:awscli
+azure-cli                  azure-cli                azure-cli                     custom:azurecli
+gcloud                     cask:google-cloud-sdk    aur:google-cloud-cli          custom:gcloud
+podman                     podman                   podman                        podman
+zsh-autosuggestions        zsh-autosuggestions      zsh-autosuggestions           zsh-autosuggestions
+zsh-syntax-highlighting    zsh-syntax-highlighting  zsh-syntax-highlighting       zsh-syntax-highlighting
+fzf                        fzf                      fzf                           fzf
+ripgrep                    ripgrep                  ripgrep                       ripgrep
+jq                         jq                       jq                            jq
+yq                         yq                       yq                            custom:yq
+tldr                       tldr                     tealdeer                      tldr
+flatpak                    -                        flatpak                       flatpak
+
+# GUI apps (Flatpak on Linux, cask on macOS)
+brave                      cask:brave-browser       flatpak:com.brave.Browser     flatpak:com.brave.Browser
+chrome                     cask:google-chrome       flatpak:com.google.Chrome     flatpak:com.google.Chrome
+obsidian                   cask:obsidian            flatpak:md.obsidian.Obsidian  flatpak:md.obsidian.Obsidian
+vscode                     cask:visual-studio-code  flatpak:com.visualstudio.code flatpak:com.visualstudio.code
+slack                      cask:slack               flatpak:com.slack.Slack       flatpak:com.slack.Slack
+discord                    cask:discord             flatpak:com.discordapp.Discord flatpak:com.discordapp.Discord
+bitwarden                  cask:bitwarden           flatpak:com.bitwarden.desktop flatpak:com.bitwarden.desktop
+clickup                    cask:clickup             aur:clickup                   custom:clickup
+claude-code                cask:claude-code         custom:claude                 custom:claude
+
+# macOS-only (window managers) — skipped on Linux
+alt-tab                    cask:alt-tab             -                             -
+rectangle                  cask:rectangle           -                             -

@@ -1,44 +1,30 @@
-# Brewfile — Mac dependencies
-# Install everything with: brew bundle
+# GENERATED from packages.tsv by packages/gen-brewfile.sh — DO NOT EDIT.
+# Edit the macos column in packages.tsv, then re-run packages/gen-brewfile.sh.
 
-# CLI tools
 brew "git"
 brew "mise"
-
-# Kubernetes
 brew "kubectl"
 brew "derailed/k9s/k9s"
-brew "kubectx"          # installs kubectx + kubens
-
-# Cloud CLIs
+brew "kubectx"
 brew "awscli"
 brew "azure-cli"
 cask "google-cloud-sdk"
-
-# Containers
 brew "podman"
-dtop
-
-# Zsh plugins
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
-
-# Terminal utilities
 brew "fzf"
 brew "ripgrep"
 brew "jq"
 brew "yq"
 brew "tldr"
-
-# Apps (GUI)
-cask "alt-tab"
 cask "brave-browser"
-cask "claude-code"
+cask "google-chrome"
 cask "obsidian"
 cask "visual-studio-code"
 cask "slack"
 cask "discord"
-cask "clickup"
 cask "bitwarden"
+cask "clickup"
+cask "claude-code"
+cask "alt-tab"
 cask "rectangle"
-cask "google-chrome"
