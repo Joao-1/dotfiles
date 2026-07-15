@@ -2,6 +2,7 @@
 # Edit the macos column in packages.tsv, then re-run packages/gen-brewfile.sh.
 
 brew "git"
+brew "zsh"
 brew "mise"
 brew "kubectl"
 brew "derailed/k9s/k9s"

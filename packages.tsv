@@ -13,6 +13,7 @@
 
 # name                     macos                    arch                          ubuntu
 git                        git                      git                           git
+zsh                        zsh                      zsh                           zsh
 mise                       mise                     mise                          custom:mise
 kubectl                    kubectl                  kubectl                       custom:kubectl
 k9s                        derailed/k9s/k9s         k9s                           custom:k9s

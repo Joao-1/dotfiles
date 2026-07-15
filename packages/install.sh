@@ -47,8 +47,18 @@ flatpak_apps() {
   [[ ${#flat[@]} -eq 0 ]] && return
   echo "==> Configuring Flathub (user)..."
   flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  # Only install apps not already present — flatpak install re-runs otherwise.
+  local todo=()
+  for app in "${flat[@]}"; do
+    if flatpak info "$app" &>/dev/null; then
+      echo "    $app already installed, skipping."
+    else
+      todo+=("$app")
+    fi
+  done
+  [[ ${#todo[@]} -eq 0 ]] && return
   echo "==> Installing GUI apps (flatpak)..."
-  flatpak --user install -y flathub "${flat[@]}"
+  flatpak --user install -y --noninteractive flathub "${todo[@]}"
 }
 
 case "$OS" in

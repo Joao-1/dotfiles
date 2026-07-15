@@ -1,4 +1,11 @@
 # =============================================================================
+# Powerlevel10k instant prompt — must stay near the top, before any output.
+# =============================================================================
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# =============================================================================
 # PATH (mise and other tools install here on Linux)
 # =============================================================================
 export PATH="$HOME/.local/bin:$PATH"
@@ -27,6 +34,13 @@ fi
   && source "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
 [[ -f "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] \
   && source "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+# =============================================================================
+# Powerlevel10k theme + config
+# =============================================================================
+[[ -f ~/.local/share/powerlevel10k/powerlevel10k.zsh-theme ]] \
+  && source ~/.local/share/powerlevel10k/powerlevel10k.zsh-theme
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 # =============================================================================
 # Git aliases
