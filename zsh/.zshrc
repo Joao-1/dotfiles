@@ -21,6 +21,17 @@ command -v mise &>/dev/null && eval "$(mise activate zsh)"
 [[ -S ~/.bitwarden-ssh-agent.sock ]] && export SSH_AUTH_SOCK=~/.bitwarden-ssh-agent.sock
 
 # =============================================================================
+# Dotfiles config dir — %x is the path of this file being sourced; :A resolves
+# the ~/.zshrc symlink back to the repo. ($0 is just "zsh" during startup.)
+# =============================================================================
+ZSH_CONFIG_DIR="${${(%):-%x}:A:h}"
+
+# =============================================================================
+# Completions (compinit must run before zsh-syntax-highlighting below)
+# =============================================================================
+[[ -f "$ZSH_CONFIG_DIR/completions.zsh" ]] && source "$ZSH_CONFIG_DIR/completions.zsh"
+
+# =============================================================================
 # Zsh plugins (path differs across Mac/Arch/Ubuntu)
 # =============================================================================
 if command -v brew &>/dev/null; then
@@ -43,45 +54,18 @@ fi
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 # =============================================================================
-# Git aliases
+# Vendored ohmyzsh plugins (lib helpers first, then the plugins)
 # =============================================================================
-alias g="git"
-alias gs="git status"
-alias ga="git add"
-alias gaa="git add --all"
-alias gc="git commit -m"
-alias gca="git commit --amend"
-alias gp="git push"
-alias gpl="git pull"
-alias gf="git fetch"
-alias gco="git checkout"
-alias gcb="git checkout -b"
-alias gb="git branch"
-alias gbd="git branch -d"
-alias gl="git log --oneline --graph --decorate"
-alias gd="git diff"
-alias gds="git diff --staged"
-alias gst="git stash"
-alias gstp="git stash pop"
+for _plugin_file in "$ZSH_CONFIG_DIR"/plugins/lib/*.zsh(N) "$ZSH_CONFIG_DIR"/plugins/*.zsh(N); do
+  source "$_plugin_file"
+done
+unset _plugin_file
 
 # =============================================================================
-# Kubectl aliases
+# Aliases (split by topic in zsh/aliases/*.zsh)
+# Loaded AFTER plugins so personal overrides win over the omz git aliases.
 # =============================================================================
-alias k="kubectl"
-alias kgp="kubectl get pods"
-alias kgs="kubectl get services"
-alias kgd="kubectl get deployments"
-alias kgn="kubectl get nodes"
-alias kga="kubectl get all"
-alias kd="kubectl describe"
-alias kdp="kubectl describe pod"
-alias kds="kubectl describe service"
-alias kdd="kubectl describe deployment"
-alias kl="kubectl logs"
-alias klf="kubectl logs -f"
-alias ke="kubectl exec -it"
-alias ka="kubectl apply -f"
-alias kdel="kubectl delete"
-alias kns="kubectl config set-context --current --namespace"
-alias kctx="kubectl config use-context"
-alias kctxs="kubectl config get-contexts"
+for _alias_file in "$ZSH_CONFIG_DIR"/aliases/*.zsh(N); do
+  source "$_alias_file"
+done
+unset _alias_file
