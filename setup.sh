@@ -41,6 +41,20 @@ else
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
 fi
 
+echo "==> Installing MesloLGS NF (Nerd Font for the p10k prompt glyphs)..."
+if [[ "$OS" == "macos" ]]; then
+  FONT_DIR="$HOME/Library/Fonts"
+else
+  FONT_DIR="$HOME/.local/share/fonts"
+fi
+mkdir -p "$FONT_DIR"
+FONT_BASE="https://github.com/romkatv/powerlevel10k-media/raw/master"
+for style in "Regular" "Bold" "Italic" "Bold Italic"; do
+  target="$FONT_DIR/MesloLGS NF ${style}.ttf"
+  [[ -f "$target" ]] || curl -fsSL "$FONT_BASE/MesloLGS%20NF%20${style// /%20}.ttf" -o "$target"
+done
+command -v fc-cache &>/dev/null && fc-cache -f "$FONT_DIR" >/dev/null 2>&1
+
 echo "==> Linking zsh config..."
 ln -sf "$DOTFILES_DIR/zsh/.zshrc" ~/.zshrc
 ln -sf "$DOTFILES_DIR/.p10k.zsh" ~/.p10k.zsh

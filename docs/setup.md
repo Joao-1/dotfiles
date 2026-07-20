@@ -82,6 +82,20 @@ git log --show-signature
 
 ---
 
+## Prompt font (Powerlevel10k)
+
+`setup.sh` installs **MesloLGS NF** (the Nerd Font the `.p10k.zsh` config was
+built for) into the user font dir. Installing the font is not enough — you must
+also point the terminal emulator at it, or the prompt renders with broken glyphs:
+
+- **Terminal setting:** set the font to `MesloLGS NF` (VS Code: `terminal.integrated.fontFamily`).
+- **WSL:** the font must be installed **on Windows**, not just in the WSL filesystem —
+  the Windows terminal does the rendering. Copy the four `MesloLGS NF *.ttf` from
+  `~/.local/share/fonts/` into Windows (right-click → Install), then set the font in
+  Windows Terminal / VS Code.
+
+---
+
 ## Runtime versions (mise)
 
 Languages and tools that vary per project (Node, Python, Terraform, etc.) are managed by mise, not installed globally.
